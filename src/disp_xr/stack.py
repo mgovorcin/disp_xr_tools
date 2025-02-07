@@ -7,7 +7,7 @@ from .product import _get_ministacks
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_CHUNKS = {'time':-1, 'x':128, 'y':128} 
+DEFAULT_CHUNKS = {'time':-1, 'x':512, 'y':512} 
 
 import pandas as pd
 import xarray as xr
