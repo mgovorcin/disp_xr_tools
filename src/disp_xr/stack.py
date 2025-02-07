@@ -9,9 +9,6 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_CHUNKS = {'time':-1, 'x':512, 'y':512} 
 
-import pandas as pd
-import xarray as xr
-
 def combine_disp_product(disp_df: pd.DataFrame, chunks: dict = None) -> xr.Dataset:
     """Stacks displacement products over time.
 
@@ -22,8 +19,9 @@ def combine_disp_product(disp_df: pd.DataFrame, chunks: dict = None) -> xr.Datas
     Returns:
         xr.Dataset: Stacked displacement dataset.
     """
+    logger.info('Stacking ministack into common stack')
     chunks = {**DEFAULT_CHUNKS, **(chunks or {})}  # Merge default chunks with user-defined chunks
-
+    logger.info(f' Chunk blocks: {chunks}')
     # Get ministack and reference dates
     mini_stacks, reference_dates = _get_ministacks(disp_df)
 
@@ -37,7 +35,7 @@ def combine_disp_product(disp_df: pd.DataFrame, chunks: dict = None) -> xr.Datas
             stack['displacement'] += stacks[ix - 1].displacement.isel(time=-1)
 
         stacks.append(stack)
-
+    
     return xr.concat(stacks, dim='time')
 
 

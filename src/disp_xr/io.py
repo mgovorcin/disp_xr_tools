@@ -1,4 +1,19 @@
 import rasterio
+from collections import namedtuple
+
+def open_image(file):
+    with rasterio.open(file) as dataset:
+        # Read the data into an array (e.g., the first band)
+        data = dataset.read(1)
+        
+        # Get some metadata
+        width = dataset.width
+        height = dataset.height
+        crs = dataset.crs
+        bounds = dataset.bounds
+        gt = dataset.transform
+    return data, {'width':width, 'height':height,
+                  'crs':crs, 'bounds':bounds, 'gt':gt}
 
 def write_geotiff(output_file, data, bounds, epsg=4326):
     #min_x, min_y, max_x, max_y = stack.rio.bounds()

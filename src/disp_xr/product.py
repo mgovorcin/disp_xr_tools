@@ -5,7 +5,7 @@ from typing import List, Union
 
 logger = logging.getLogger(__name__)
 
-def get_disp_df(products_path: Path) ->pd.DataFrame:
+def get_disp_info(products_path: Path) ->pd.DataFrame:
     """
     Get filename information from OPERA DISP products.
 
