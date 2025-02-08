@@ -21,7 +21,9 @@ def func_stat(mode: str):
         'median': lambda x: x.median(dim='time'),
         'max': lambda x: x.max(dim='time'),
         'min': lambda x: x.min(dim='time'),
-        'std': lambda x: x.std(dim='time')
+        'std': lambda x: x.std(dim='time'),
+        'var': lambda x: x.var(dim='time'),
+        'sum': lambda x: x.sum(dim='time')
     }
     
     # Check if the mode is valid and return the corresponding function
@@ -29,7 +31,8 @@ def func_stat(mode: str):
         return operations[mode]
     except KeyError:
         raise ValueError((f"Unsupported mode: '{mode}'."
-                          "Valid options are 'mean', 'median', 'max', 'min', 'std'."))
+                          " Valid options are 'mean', 'median', 'max',"
+                          " 'min', 'std', 'var', 'sum'"))
 
 # Map_block template
 def get_template(xr_df:xr.DataArray):

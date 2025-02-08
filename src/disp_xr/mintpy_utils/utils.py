@@ -1,4 +1,5 @@
 import re
+import random
 import yaml
 import rasterio
 import xarray as xr
@@ -134,3 +135,44 @@ def get_metadata(disp_nc : str | Path, reference_date :str = None) -> dict:
         del metadata[key]
 
     return metadata
+
+import numpy as np
+import random
+
+def find_reference_point(pct_mask, mean_tcoh, percentile=90):
+    """
+    Selects a reference point where the percentage mask is nonzero and 
+    the mean temporal coherence is above the 90th percentile.
+
+    Parameters:
+        pct_mask (np.ndarray): Percentage mask (nonzero values indicate valid regions).
+        mean_tcoh (np.ndarray): Mean temporal coherence.
+
+    Returns:
+        (int, int): y, x coordinates of the selected reference point.
+    """
+    # Create a mask where pct_mask is nonzero
+    valid_mask = pct_mask == 100
+    
+    # Compute 90th percentile threshold over valid pixels
+    masked_tcoh = np.ma.masked_array(mean_tcoh, mask=valid_mask)
+    threshold = np.nanpercentile(masked_tcoh, percentile)
+    
+    # Create a mask for high-coherence pixels
+    high_coherence_mask = (masked_tcoh >= threshold) 
+    
+    # Get indices of valid pixels
+    valid_indices = np.argwhere(high_coherence_mask.filled(0))
+    
+    if valid_indices.size == 0:
+        raise ValueError("No valid reference point found. Adjust threshold or check input data.")
+
+    # Randomly select one valid pixel
+    y, x = random.choice(valid_indices)
+    
+    # Flip y-axis if needed (assuming `y` is inverted)
+    #y = mean_tcoh.shape[0] - 1 - y
+
+    print(f'Selected reference pixel (y/x): {(y, x)}')
+    
+    return y, x
