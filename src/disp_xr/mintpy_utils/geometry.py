@@ -79,8 +79,8 @@ def prepare(metadata:dict,
     _ = stitch_geometry_layers(list_static_files,
                                output_dir=static_dir)
 
-    los_east, los_east_atr = _open_image(static_dir / 'los_east.tif')
-    los_north, _ = _open_image(static_dir / 'los_north.tif')
+    los_east, los_east_atr = open_image(static_dir / 'los_east.tif')
+    los_north, _ = open_image(static_dir / 'los_north.tif')
 
     # Get incidence and azimuth 
     az_angle = -1 * np.rad2deg(np.arctan2(los_east, los_north)) % 360
@@ -158,12 +158,12 @@ def prepare(metadata:dict,
     
     # Make Mintpy cube
     print('\nCreating MINTPY cube: ', Path(work_dir) / 'geometry.h5')
-    inc, atr = _open_image(Path(temp_dir) / 'incidence_angle.tif')
-    azi, atr = _open_image(Path(temp_dir) / 'azimuth_angle.tif')
+    inc, atr = open_image(Path(temp_dir) / 'incidence_angle.tif')
+    azi, atr = open_image(Path(temp_dir) / 'azimuth_angle.tif')
     mask = np.ma.masked_equal(inc, 0).mask
-    dem, atr = _open_image(Path(temp_dir) / 'dem.tif')
+    dem, atr = open_image(Path(temp_dir) / 'dem.tif')
     dem = np.ma.masked_array(dem, mask=mask).filled(0)
-    water, atr = _open_image(Path(temp_dir) / 'water_mask.tif')
+    water, atr = open_image(Path(temp_dir) / 'water_mask.tif')
     water = np.ma.masked_array(water, mask=mask).filled(0)
 
 

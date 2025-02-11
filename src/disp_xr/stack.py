@@ -30,7 +30,7 @@ def combine_disp_product(disp_df: pd.DataFrame, chunks: dict = None) -> xr.Datas
         stack_files = mini_stacks.loc[date].sort_index().path.to_list()
         stack = xr.open_mfdataset(stack_files, chunks=chunks)
         
-        # Append first epcoh of new ministack to last epochs of previous
+        # Append first epoch of new ministack to last epochs of previous
         if ix > 0:
             stack['displacement'] += stacks[ix - 1].displacement.isel(time=-1)
 

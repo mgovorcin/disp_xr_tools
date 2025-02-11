@@ -102,6 +102,17 @@ def get_mean_phasesim(stack_xr:xr.Dataset, mode='mean'):
                                                 template=template)
     return data.values
 
+def get_mean_shpcount(stack_xr:xr.Dataset, mode='mean'):
+    # Get template
+    logger.info(f'Get {mode} shp count') 
+    template = get_template(stack_xr.shp_counts)
+
+    stat_func = func_stat(mode)
+
+    data = stack_xr.shp_counts.map_blocks(stat_func,
+                                        template=template)
+    return data.values
+
 def get_mean_tcoh(stack_xr:xr.Dataset, mode='mean'):
     # Get template
     logger.info(f'Get {mode} temporal coherence') 
