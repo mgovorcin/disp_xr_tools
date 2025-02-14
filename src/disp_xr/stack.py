@@ -37,5 +37,3 @@ def combine_disp_product(disp_df: pd.DataFrame, chunks: dict = None) -> xr.Datas
         stacks.append(stack)
     
     return xr.concat(stacks, dim='time')
-
-
