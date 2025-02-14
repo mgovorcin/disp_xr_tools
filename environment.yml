@@ -1,0 +1,21 @@
+name: disp_xr
+channels:
+  - conda-forge
+dependencies:
+  - python > 3.13
+  - pip>=21.3  # https://pip.pypa.io/en/stable/reference/build-system/pyproject-toml/#editable-installation
+  - git  # for pip install, due to setuptools_scm
+  - click>=7.0
+  - xarray
+  - numpy
+  - scipy
+  - pandas
+  - netcdf4
+  - h5netcdf
+  - zarr
+  - matplotlib-base
+# env
+  - ruff
+  - pre_commit
+  - pydantic
+  - mypy
