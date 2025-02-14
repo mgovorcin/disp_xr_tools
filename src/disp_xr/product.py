@@ -43,14 +43,14 @@ def get_disp_info(products_path: Path) ->pd.DataFrame:
     logger.info(f' Ending date: {disp_df.end_date.max()}')
 
     # Get number of reference dates
-    logger.info(f' Number of reference dates: {len(_get_ministacks(disp_df)[1])}')
+    logger.info(f' Number of reference dates: {len(_get_reference_dates(disp_df)[1])}')
 
-    return _find_duplicates(disp_df)[0] 
+    return _find_duplicates(disp_df)[0].sort_values(by='date12', ignore_index=True)
 
-def _get_ministacks(df: pd.DataFrame) -> Union[pd.DataFrame, List]:
-    mini_stacks = df.groupby(['date1', 'date2']).apply(lambda x: x, include_groups=False)
-    reference_dates = mini_stacks.index.get_level_values(0).unique()
-    return mini_stacks, reference_dates
+def _get_reference_dates(df: pd.DataFrame) -> Union[pd.DataFrame, List]:
+    substacks = df.groupby(['date1', 'date2']).apply(lambda x: x, include_groups=False)
+    reference_dates = substacks.index.get_level_values(0).unique()
+    return substacks, reference_dates
 
 def _find_duplicates(input_df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
     """

@@ -3,12 +3,14 @@ from typing import List
 import xarray as xr
 import pandas as pd
 
-from .product import _get_ministacks
+from .product import _get_reference_dates
+from .log import log_runtime
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_CHUNKS = {'time':-1, 'x':512, 'y':512} 
 
+@log_runtime
 def combine_disp_product(disp_df: pd.DataFrame, chunks: dict = None) -> xr.Dataset:
     """Stacks displacement products over time.
 
@@ -22,12 +24,13 @@ def combine_disp_product(disp_df: pd.DataFrame, chunks: dict = None) -> xr.Datas
     logger.info('Stacking ministack into common stack')
     chunks = {**DEFAULT_CHUNKS, **(chunks or {})}  # Merge default chunks with user-defined chunks
     logger.info(f' Chunk blocks: {chunks}')
+    
     # Get ministack and reference dates
-    mini_stacks, reference_dates = _get_ministacks(disp_df)
+    substacks, reference_dates = _get_reference_dates(disp_df)
 
     stacks = []
     for ix, date in enumerate(reference_dates):
-        stack_files = mini_stacks.loc[date].sort_index().path.to_list()
+        stack_files = substacks.loc[date].sort_index().path.to_list()
         stack = xr.open_mfdataset(stack_files, chunks=chunks)
         
         # Append first epoch of new ministack to last epochs of previous
