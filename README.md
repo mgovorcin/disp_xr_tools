@@ -19,9 +19,9 @@ conda activate disp_xr
 ```
 or install within your existing env with mamba.
 
-3. Install `tropo` via pip in editable mode
+3. Install `disp_xr` via pip in editable mode
 ```bash
-python -m pip install --no-deps -e  tropo
+python -m pip install --no-deps -e  disp_xr
 ```
 
 ### Usage
