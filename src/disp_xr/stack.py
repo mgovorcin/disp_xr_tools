@@ -4,7 +4,7 @@ from typing import Optional
 import pandas as pd
 import xarray as xr
 
-from .log import log_runtime
+from .log.logging import log_runtime
 from .product import _get_reference_dates
 
 logger = logging.getLogger(__name__)
