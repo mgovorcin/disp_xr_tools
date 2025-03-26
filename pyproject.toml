@@ -30,12 +30,12 @@ Homepage = "https://github.com/OPERA-Cal-Val/disp_xr_tools"
 [project.scripts]
 disp_xr = "disp_xr.cli:cli_app"
 
-[tool.setuptools.dynamic]
-dependencies = { file = ["requirements.txt"] }
+#[tool.setuptools.dynamic]
+#dependencies = { file = ["requirements.txt"] }
 
 # extra requirements: `pip install tropo[docs]` or `pip install .[docs]`
-[tool.setuptools.dynamic.optional-dependencies.test]
-file = ["tests/requirements.txt"]
+#[tool.setuptools.dynamic.optional-dependencies.test]
+#file = ["tests/requirements.txt"]
 
 [tool.setuptools_scm]
 # https://github.com/pypa/setuptools_scm#configuration-parameters
