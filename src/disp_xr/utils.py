@@ -8,6 +8,7 @@ import h5py
 import numpy as np
 import xarray as xr
 import yaml  # type: ignore
+from pyproj import Transformer
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,58 @@ def get_chunks_indices(xr_array: xr.Dataset) -> list:
             slice_ = np.s_[:, idy[i] : idy[i + 1], idx[j] : idx[j + 1]]
             slices.append(slice_)
     return slices
+
+
+def latlon_to_utm(lat: float, lon: float, utm_epsg: int) -> Tuple[float, float]:
+    """Convert latitude and longitude coordinates to UTM coordinates.
+
+    Parameters
+    ----------
+    lat : float
+        Latitude coordinate in decimal degrees.
+    lon : float
+        Longitude coordinate in decimal degrees.
+    utm_epsg : int
+        The EPSG code for the UTM zone to which the coordinates should be transformed.
+
+    Returns
+    -------
+    Tuple[float, float]
+        A tuple containing the UTM easting and northing coordinates.
+
+    """
+    transformer = Transformer.from_crs("epsg:4326", f"epsg:{utm_epsg}", always_xy=True)
+    return transformer.transform(lon, lat)
+
+
+def get_extent(ds: xr.Dataset) -> Tuple[float, float, float, float]:
+    """Calculate the DISP spatial extent in UTM.
+
+    Parameters
+    ----------
+    ds : xr.Dataset
+        The xarray dataset, which must have a spatial reference
+        with a 'GeoTransform' attribute and 'x' and 'y' dimensions.
+
+    Returns
+    -------
+    Tuple[float, float, float, float]
+        A tuple representing the extent (x0, x1, y1, y0) where:
+        - x0 is the starting x-coordinate,
+        - x1 is the ending x-coordinate,
+        - y1 is the starting y-coordinate,
+        - y0 is the ending y-coordinate.
+
+    """
+    # Extracting GeoTransform values
+    transform = ds.spatial_ref.attrs["GeoTransform"].split(" ")
+    x0, dx, _, y0, _, dy = map(float, transform)
+
+    # Calculating the extent
+    x1 = x0 + dx * ds.sizes["x"]
+    y1 = y0 + dy * ds.sizes["y"]
+
+    return (x0, x1, y1, y0)
 
 
 def get_burst_ids(disp_path: Union[str, Path]) -> tuple[Optional[str], Optional[str]]:

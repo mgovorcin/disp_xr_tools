@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+import numpy as np
 import pandas as pd
 import xarray as xr
 
@@ -69,5 +70,18 @@ def combine_disp_product(
             stack["displacement"] += stacks[ix - 1].isel(time=-1).displacement
 
         stacks.append(stack)
+
+    # Get first reference date
+    first_epoch = disp_df.start_date.min()
+    first_epoch = np.datetime64(first_epoch.to_pydatetime())
+
+    # Get empty dataset with first reference date
+    first_ds = xr.full_like(stacks[0].isel(time=0), 0)
+    first_ds["time"] = first_epoch
+    first_ds["reference_time"] = first_ds["time"]
+    first_ds = first_ds.expand_dims("time")
+
+    # Concatenate first epoch with stacks
+    stacks.insert(0, first_ds)
 
     return xr.concat(stacks, dim="time")
